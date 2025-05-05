@@ -27,7 +27,7 @@ export const useAccountStore = defineStore('account', {
       })
       this.saveData()
     },
-    updateAccount(id: string, { password, login, labels } : { password: string | null, login: string, labels: string }) {
+    updateAccount(id: string, { password, login, labels, type } : { password: string | null, login: string, labels: string, type: String }) {
       const index = this.accounts.findIndex(a => a.id === id)
       if (index === -1) return
       console.log(id)
@@ -35,7 +35,14 @@ export const useAccountStore = defineStore('account', {
 
       acc.password = password
       acc.login = login
-      acc.labels = labels.split('; ')
+      if (labels === '') {
+        acc.labels = []
+      } else {
+          try {
+            acc.labels = labels.split('; ')
+          } catch {}
+      }
+      acc.type = type == 'LDAP' ? 'LDAP' : 'Local'
 
 
       this.saveData()

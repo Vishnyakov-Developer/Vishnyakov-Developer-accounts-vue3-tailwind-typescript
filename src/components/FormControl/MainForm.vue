@@ -10,9 +10,10 @@
       </button>
     </div>
     <div class="accounts-info">
+      {{ accounts }}
       <AccountForm
-        v-for="(account, index) in accounts"
-        :key="index"
+        v-for="account in accounts"
+        :key="account.id"
         :account="account"
       />
     </div>
@@ -20,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import iconPlus from "../icons/iconPlus.vue";
 import AccountForm from "./AccountForm.vue";
 import { useAccountStore } from "@/stores/account";
@@ -27,7 +29,8 @@ import { useAccountStore } from "@/stores/account";
 const store = useAccountStore();
 store.loadData();
 
-const accounts = store.accounts;
+const accounts = ref(store.accounts);
+console.log(accounts);
 
 function addEmpty() {
   store.addAccountStart();
@@ -36,7 +39,7 @@ function addEmpty() {
 
 <style lang="sass" scoped>
 .container
-  @apply max-w-[900px] mx-auto my-[30px]
+  @apply max-w-[1100px] mx-auto my-[30px]
 h1
   @apply text-black text-[30px] uppercase font-extrabold
 .accounts-info
