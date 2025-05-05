@@ -60,6 +60,12 @@ export const useAccountStore = defineStore('account', {
         console.log('ошибочка ', err)
       }
     },
+    deleteAccount(id: string) {
+      const index = this.accounts.findIndex(a => a.id === id)
+      if (index === -1) return
+      this.accounts.splice(index, 1)
+      this.saveData()
+    },
     saveData() {
       localStorage.setItem('accounts', JSON.stringify(this.accounts))
     }

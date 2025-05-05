@@ -7,11 +7,19 @@
       :value="
         account.labels.reduce((a, b) => a + '; ' + b, '').replace('; ', '')
       "
+      maxlength="50"
       @input="labels = $event?.target?.value"
+      :class="
+        account.labels.reduce((a, b) => a + '; ' + b, '').replace('; ', '')
+          ?.length > 50
+          ? '!border-red-400'
+          : ''
+      "
       :placeholder="'Значение'"
     />
     <!-- select: -->
     <select
+      maxlength="100"
       class="input"
       @change="type = $event?.target?.value"
       autocomplete="off"
@@ -26,6 +34,7 @@
       :class="account.type === 'Local' ? ' grid-cols-2' : ''"
     >
       <input
+        maxlength="100"
         name="no-autocomplete-field"
         autocomplete="off"
         type="text"
@@ -39,20 +48,25 @@
         v-if="account.type === 'Local'"
       >
         <input
+          maxlength="100"
           name="no-autocompletefield"
           autocomplete="off"
           class="outline-none w-full h-full border-noe"
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
           placeholder="Значение"
-          @input="password = $event?.target?.value || '***********'"
-          :value="password || '***********'"
+          @input="password = $event?.target?.value"
+          :value="password || ' '"
         />
-        <div>SEE</div>
+        <iconSee
+          class="mx-[5px] cursor-pointer"
+          @click="showPassword = !showPassword"
+        />
       </div>
     </div>
 
     <div class="flex justify-start">
       <iconTrash
+        @click="deleteAccount"
         class="transition-all mr-left hover:scale-105 cursor-pointer"
       />
     </div>
@@ -63,12 +77,17 @@
 import { defineProps, onMounted, ref, watch } from "vue";
 import iconTrash from "../icons/iconTrash.vue";
 import { useAccountStore } from "@/stores/account";
+import iconSee from "../icons/iconSee.vue";
 const props = defineProps({
   account: {
     type: Object,
     required: true,
   },
 });
+
+function deleteAccount() {
+  useAccountStore().deleteAccount(props.account.id);
+}
 
 const loaded = ref(false);
 onMounted(() => {
@@ -79,18 +98,23 @@ const password: any = ref(props.account.password);
 const login: any = ref(props.account.login);
 const labels: any = ref(props.account.labels || []);
 const type: any = ref(props.account.type);
+const showPassword = ref(false);
 
 watch(
   () => [password.value, login.value, labels.value, type.value],
   () => {
-    const accountWroten = {
-      ...props.account,
-      password: password.value,
-      login: login.value,
-      labels: labels.value,
-      type: type.value,
-    };
-    console.log(props.account.id);
+    if (labels.value.length > 50) {
+      labels.value = labels.value.slice(0, 50);
+    }
+
+    if (login.value.length > 50) {
+      login.value = login.value.slice(0, 50);
+    }
+
+    if (password.value.length > 50) {
+      password.value = password.value.slice(0, 50);
+    }
+
     useAccountStore().updateAccount(props.account.id, {
       login: login.value,
       password: password.value,

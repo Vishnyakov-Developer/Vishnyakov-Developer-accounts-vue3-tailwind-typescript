@@ -10,7 +10,6 @@
       </button>
     </div>
     <div class="accounts-info">
-      {{ accounts }}
       <AccountForm
         v-for="account in accounts"
         :key="account.id"
@@ -39,9 +38,9 @@ function addEmpty() {
 
 <style lang="sass" scoped>
 .container
-  @apply max-w-[1100px] mx-auto my-[30px]
+  @apply max-w-[1150px] mx-auto my-[30px]
 h1
   @apply text-black text-[30px] uppercase font-extrabold
 .accounts-info
-  @apply my-[40px]
+  @apply my-[40px] flex flex-col gap-[15px]
 </style>
